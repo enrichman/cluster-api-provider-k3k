@@ -164,7 +164,6 @@ $(RELEASE_DIR):
 release: clean-release  ## Builds and push container images using the latest git tag for the commit.
 	$(MAKE) set-manifest-image
 	$(MAKE) release-manifests
-	$(MAKE) release-templates
 	$(MAKE) release-metadata
 
 .PHONY: set-manifest-image
@@ -181,7 +180,7 @@ release-metadata: $(RELEASE_DIR)
 	cp metadata.yaml $(RELEASE_DIR)/metadata.yaml
 
 .PHONY: clean-release
-clean-release: clean-release-git ## Remove the release folder.
+clean-release: ## Remove the release folder.
 	rm -rf $(RELEASE_DIR)
 
 ##@ Dependencies
