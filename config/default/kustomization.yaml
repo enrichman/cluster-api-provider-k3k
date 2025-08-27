@@ -35,7 +35,5 @@ patches:
 
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-labels:
-- includeSelectors: true
-  pairs:
-    cluster.x-k8s.io/provider: k3k
+commonLabels:
+  cluster.x-k8s.io/provider: k3k
