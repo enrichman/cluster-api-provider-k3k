@@ -22,6 +22,8 @@ jobs:
           go-version-file: 'go.mod'
 
       - name: Release
+        env:
+          IMG: ghcr.io/enrichman/controller:latest
         run: |
           make docker-build
           make docker-push
