@@ -1,14 +1,22 @@
 name: Release
 
 on:
-  push:
-    tags:
-    - "v*"
+  release:
+    types: [created]
   workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'The tag of the release to upload assets to (e.g., v1.2.3)'
+        required: true
+        type: string
 
 permissions:
   contents: write
   packages: write
+  id-token: write
+
+env:
+  TAG: ${{ github.event_name == 'release' && github.ref_name || inputs.tag_name }}
 
 jobs:
   release:
@@ -16,9 +24,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          ref: ${{ env.TAG }}
 
-      - uses: actions/setup-go@v5
+      - name: Set up Go
+        uses: actions/setup-go@v5
         with:
           go-version-file: 'go.mod'
       
@@ -29,9 +43,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Release
+      - name: Build and Release
         env:
-          IMG: ghcr.io/enrichman/controller:latest
+          IMG: ghcr.io/${{ github.repository_owner }}/cluster-api-k3k-controller:${{ env.TAG }}
         run: |
           make docker-build
           make docker-push
+          make release
+
+      - name: Upload assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload ${{ env.TAG }} out/*
