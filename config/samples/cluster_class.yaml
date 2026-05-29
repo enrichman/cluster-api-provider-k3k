@@ -1,4 +1,4 @@
-apiVersion: cluster.x-k8s.io/v1beta1
+apiVersion: cluster.x-k8s.io/v1beta2
 kind: ClusterClass
 metadata:
   labels:
@@ -10,17 +10,15 @@ metadata:
   name: k3k-clusterclass-v0.1.0
 spec:
   controlPlane:
-    ref:
+    templateRef:
       apiVersion: controlplane.cluster.x-k8s.io/v1beta1
       kind: K3kControlPlaneTemplate
       name: k3kcontrolplanetemplate-sample
-      namespace: default
   infrastructure:
-    ref:
+    templateRef:
       apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
       kind: K3kClusterTemplate
       name: k3kclustertemplate-sample
-      namespace: default
   variables:
     - name: servers
       required: false
@@ -358,7 +356,7 @@ spec:
           variable: hostKubeconfig
 ---
 # once created, this object will be owned by the cluster class
-apiVersion: controlplane.cluster.x-k8s.io/v1beta2
+apiVersion: controlplane.cluster.x-k8s.io/v1beta1
 kind: K3kControlPlaneTemplate
 metadata:
   labels:
@@ -373,7 +371,6 @@ spec:
     spec:
       servers: 1
       agents: 3
-      token: someexamplereplaceme
       version: v1.31.1-k3s1
       serverArgs:
         - "--write-kubeconfig-mode=777"
@@ -381,7 +378,7 @@ spec:
         nodePort: {}
 ---
 # once created, this object will be owned by the cluster class
-apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: K3kClusterTemplate
 metadata:
   labels:

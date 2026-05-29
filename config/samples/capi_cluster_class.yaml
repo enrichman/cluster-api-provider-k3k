@@ -1,4 +1,4 @@
-apiVersion: cluster.x-k8s.io/v1beta1
+apiVersion: cluster.x-k8s.io/v1beta2
 kind: Cluster
 metadata:
  labels:
@@ -8,14 +8,13 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/created-by: capi-k3k
  name: example-cluster
-spec: 
+spec:
   topology:
-    class: k3k-clusterclass-v0.1.0
+    classRef:
+      name: k3k-clusterclass-v0.1.0
     version: v1.31.1-k3s1
     controlPlane:
       metadata:
         labels:
           "example.io/somevalue": "someother"
     variables:
-    - name: token
-      value: "newtokenhere"
